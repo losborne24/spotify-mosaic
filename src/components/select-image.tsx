@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import temp from '../temp.jpg';
+import './select-images.scss';
 
 import Button from './button';
 const SelectImage = (props: any) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [selectedTrackImages, setSelectedTrackImages] = useState() as any[];
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   let img = new Image();
 
@@ -27,47 +29,79 @@ const SelectImage = (props: any) => {
 
     img.src = temp;
   };
+
   const draw = (ctx: any) => {
     ctx.drawImage(img, 0, 0, img.width, img.height);
     let images = [];
     for (let y = 0; y < img.height; y++) {
       for (let x = 0; x < img.width; x++) {
-        let pixelA = ctx.getImageData(x, y, 1, 1).data;
-        let closestId: any;
-        let minDist;
+        let pixelA = [...ctx.getImageData(x, y, 1, 1).data];
+        pixelA[3] /= 255;
+        for (let v = 0; v < 3; v++) {
+          pixelA[v] = (pixelA[v] * pixelA[3]) / 255;
+        }
+        let minDist = -1;
+        let index = 0;
         for (let i = 0; i < props.tracks.length; i++) {
-          let pixelB = props.tracks[i].avgColour;
-          pixelA[3] /= 255;
+          let pixelB = [...props.tracks[i].avgColour];
           pixelB[3] /= 255;
           for (let v = 0; v < 3; v++) {
-            pixelA[v] = (pixelA[v] * pixelA[3]) / 255;
             pixelB[v] = (pixelB[v] * pixelB[3]) / 255;
           }
           let dist =
             Math.max(
-              (pixelA[0] - pixelB[0]) ^ 2,
-              (pixelA[0] - pixelB[0] - pixelA[3] + pixelB[3]) ^ 2
+              Math.pow(pixelA[0] - pixelB[0], 2),
+              Math.pow(pixelA[0] - pixelB[0] - pixelA[3] + pixelB[3], 2)
             ) +
             Math.max(
-              (pixelA[1] - pixelB[1]) ^ 2,
-              (pixelA[1] - pixelB[1] - pixelA[3] + pixelB[3]) ^ 2
+              Math.pow(pixelA[1] - pixelB[1], 2),
+              Math.pow(pixelA[1] - pixelB[1] - pixelA[3] + pixelB[3], 2)
             ) +
             Math.max(
-              (pixelA[2] - pixelB[2]) ^ 2,
-              (pixelA[2] - pixelB[2] - pixelA[3] + pixelB[3]) ^ 2
+              Math.pow(pixelA[2] - pixelB[2], 2),
+              Math.pow(pixelA[2] - pixelB[2] - pixelA[3] + pixelB[3], 2)
             );
-          if (!minDist) {
+          if (minDist === -1) {
             minDist = dist;
-            closestId = props.tracks[i].id;
+            index = i;
           } else if (dist < minDist) {
             minDist = dist;
-            closestId = props.tracks[i].id;
+            index = i;
           }
         }
-        images.push(props.tracks.find((t: any) => t.id === closestId)[0].img);
+        // console.log(
+        //   '%cCOLOR' + '%cWINNINGCOLOR',
+        //   `background-color:rgba(${pixelA[0] * 255},${pixelA[1] * 255},${
+        //     pixelA[2] * 255
+        //   },${pixelA[3] * 255})`,
+        //   `background-color:rgba(${props.tracks[index].avgColour[0]},${props.tracks[index].avgColour[1]},${props.tracks[index].avgColour[2]},${props.tracks[index].avgColour[3]}`
+        // );
+        images.push(props.tracks[index].img);
       }
     }
-    // images.foreach(image =>)
+    setSelectedTrackImages(images);
+  };
+  const grid = {
+    display: 'grid',
+    gridTemplateColumns: `repeat(${width}, 1fr)`,
+  };
+  const renderImages = () => {
+    if (selectedTrackImages) {
+      return (
+        <div style={grid}>
+          {selectedTrackImages.map((item: string | undefined, index: any) => {
+            return (
+              <img
+                className={index}
+                key={`img-${index}`}
+                src={item}
+                alt="album cover"
+              ></img>
+            );
+          })}
+        </div>
+      );
+    }
   };
   useEffect(() => {
     const ctx = canvasRef.current?.getContext('2d');
@@ -77,6 +111,7 @@ const SelectImage = (props: any) => {
     <>
       <Button onClick={selectImage} name="Select Image"></Button>
       <canvas ref={canvasRef} width={width} height={height}></canvas>
+      <div>{renderImages()}</div>
     </>
   );
 };

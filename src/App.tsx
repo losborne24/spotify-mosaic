@@ -11,11 +11,7 @@ const App = () => {
     <Router>
       <Switch>
         <Route path="/playlists">
-          <Playlist
-            setTokenValue={setToken}
-            token={token}
-            setTracks={setTracks}
-          />
+          <Playlist setToken={setToken} token={token} setTracks={setTracks} />
         </Route>
         <Route path="/selectImage">
           <SelectImage tracks={tracks} />

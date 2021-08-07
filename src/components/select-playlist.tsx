@@ -11,7 +11,7 @@ const Playlist = (props: any) => {
   const test = () => {
     axios
       .get(
-        'https://api.spotify.com/v1/playlists/1StCok9Fwety9lJKQotLH6/tracks',
+        'https://api.spotify.com/v1/playlists/67kpF6n681k5BXimSJqYJh/tracks',
         {
           headers: { Authorization: `Bearer ${props?.token}` },
           params: {
@@ -34,6 +34,10 @@ const Playlist = (props: any) => {
                 img: item.track.album.images[2].url,
                 avgColour: color.value,
               });
+              console.log(
+                '%c avgColour',
+                `color: rgba(${color.value[0]},${color.value[1]},${color.value[2]},${color.value[3]}`
+              );
             });
           });
           props.setTracks(_tracks);
@@ -45,7 +49,7 @@ const Playlist = (props: any) => {
       });
   };
   useEffect(() => {
-    props.setTokenValue(
+    props.setToken(
       window.location.hash.split(constants.access_token).pop()?.split('&')[0]
     );
   }, [props]);
