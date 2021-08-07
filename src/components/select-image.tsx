@@ -1,33 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-import temp from '../temp.jpg';
-import './select-images.scss';
-
-import Button from './button';
 const SelectImage = (props: any) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [selectedTrackImages, setSelectedTrackImages] = useState() as any[];
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  let img = new Image();
-
+  let img: HTMLImageElement;
   const selectImage = () => {
-    img = new Image();
-    img.onload = () => {
-      let height = img.height;
-      let width = img.width;
-      if (width * height > 10000) {
-        let size = width * height;
-        let modifier = Math.sqrt(size / 10000);
-        img.height /= modifier;
-        img.width /= modifier;
-        setHeight(img.height);
-        setWidth(img.width);
-      }
-      const ctx = canvasRef.current?.getContext('2d');
-      draw(ctx);
-    };
-
-    img.src = temp;
+    let height = img.height;
+    let width = img.width;
+    if (width * height > 10000) {
+      let size = width * height;
+      let modifier = Math.sqrt(size / 10000);
+      img.height /= modifier;
+      img.width /= modifier;
+      setHeight(img.height);
+      setWidth(img.width);
+    }
+    const ctx = canvasRef.current?.getContext('2d');
+    draw(ctx);
   };
 
   const draw = (ctx: any) => {
@@ -103,13 +93,26 @@ const SelectImage = (props: any) => {
       );
     }
   };
-  useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d');
-    draw(ctx);
-  }, []);
+  const onFileUpload = (e: any) => {
+    if (e.target.files.length > 0) {
+      img = new Image();
+      let file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async (_) => {
+        let imgData = reader.result;
+        await convertToString(imgData);
+        selectImage();
+      };
+    }
+  };
+  const convertToString = (imgData: any) => {
+    img.src = imgData.toString();
+  };
+
   return (
     <>
-      <Button onClick={selectImage} name="Select Image"></Button>
+      <input onChange={onFileUpload} type="file" accept="image/*" />
       <canvas ref={canvasRef} width={width} height={height}></canvas>
       <div>{renderImages()}</div>
     </>
