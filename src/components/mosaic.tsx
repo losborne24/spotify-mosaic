@@ -1,9 +1,13 @@
+import { Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
+import ReactImageMagnify from 'react-image-magnify';
+
 const Mosaic = (props: any) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [selectedTrackImages, setSelectedTrackImages] = useState() as any[];
+  const [selectedTrackImage, setSelectedTrackImage] = useState() as any[];
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const mosaicCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const selectImage = (img: any) => {
     let height = img.height;
     let width = img.width;
@@ -18,10 +22,19 @@ const Mosaic = (props: any) => {
     const ctx = canvasRef.current?.getContext('2d');
     draw(ctx, img);
   };
-
+  let count = 0;
+  const onLoadCallback = (img: any) => {
+    count++;
+    if (count === img.width * img.height) {
+      if (mosaicCanvasRef.current) {
+        setSelectedTrackImage(mosaicCanvasRef.current.toDataURL());
+        count = 0;
+      }
+    }
+  };
   const draw = (ctx: any, img: { width: number; height: number }) => {
     ctx.drawImage(img, 0, 0, img.width, img.height);
-    let images = [];
+    const mosaicCanvas = mosaicCanvasRef.current?.getContext('2d');
     for (let y = 0; y < img.height; y++) {
       for (let x = 0; x < img.width; x++) {
         let pixelA = [...ctx.getImageData(x, y, 1, 1).data];
@@ -58,41 +71,32 @@ const Mosaic = (props: any) => {
             index = i;
           }
         }
-        // console.log(
-        //   '%cCOLOR' + '%cWINNINGCOLOR',
-        //   `background-color:rgba(${pixelA[0] * 255},${pixelA[1] * 255},${
-        //     pixelA[2] * 255
-        //   },${pixelA[3] * 255})`,
-        //   `background-color:rgba(${props.tracks[index].avgColour[0]},${props.tracks[index].avgColour[1]},${props.tracks[index].avgColour[2]},${props.tracks[index].avgColour[3]}`
-        // );
-        images.push(props.tracks[index].img);
+        let album = new Image();
+        album.crossOrigin = 'anonymous';
+        album.src = props.tracks[index].img;
+        album.onload = () => {
+          mosaicCanvas?.drawImage(
+            album,
+            x * 64,
+            y * 64,
+            album.width,
+            album.height
+          );
+          onLoadCallback(img);
+        };
       }
     }
-    setSelectedTrackImages(images);
   };
   const grid = {
     display: 'grid',
     gridTemplateColumns: `repeat(${width}, 1fr)`,
   };
-  const renderImages = () => {
-    if (selectedTrackImages) {
-      return (
-        <div style={grid}>
-          {selectedTrackImages.map((item: string | undefined, index: any) => {
-            return (
-              <img
-                className={index}
-                key={`img-${index}`}
-                src={item}
-                alt="album cover"
-              ></img>
-            );
-          })}
-        </div>
-      );
+
+  const test = () => {
+    if (mosaicCanvasRef.current) {
+      setSelectedTrackImage(mosaicCanvasRef.current.toDataURL());
     }
   };
-
   useEffect(() => {
     if (props.imageSrc) {
       let img = new Image();
@@ -104,8 +108,32 @@ const Mosaic = (props: any) => {
   }, [props.img]);
   return (
     <>
+      <Button>Select New Playlist</Button>
+      <Button onClick={test}>Upload New Image</Button>
+      <Button disabled>Download Image</Button>
       <canvas hidden ref={canvasRef} width={width} height={height}></canvas>
-      <div>{renderImages()}</div>
+      <canvas
+        hidden
+        ref={mosaicCanvasRef}
+        width={width * 64}
+        height={height * 64}
+      ></canvas>
+      <ReactImageMagnify
+        {...{
+          smallImage: {
+            alt: 'Wristwatch by Ted Baker London',
+            width: width * 8,
+            height: height * 8,
+            isFluidWidth: false,
+            src: selectedTrackImage,
+          },
+          largeImage: {
+            src: selectedTrackImage,
+            width: width * 64,
+            height: height * 64,
+          },
+        }}
+      />
     </>
   );
 };
