@@ -21,7 +21,6 @@ const SelectImage = (props: any) => {
   };
   return (
     <>
-      <h2>Sample Images</h2>
       <Button variant="contained" color="primary" component="label">
         Select Image
         <input hidden onChange={onFileUpload} type="file" accept="image/*" />

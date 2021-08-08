@@ -169,9 +169,13 @@ const Playlist = (props: any) => {
   };
 
   useEffect(() => {
-    props.setToken(
+    if (
       window.location.hash.split(constants.access_token).pop()?.split('&')[0]
-    );
+    ) {
+      props.setToken(
+        window.location.hash.split(constants.access_token).pop()?.split('&')[0]
+      );
+    }
   }, []);
   useEffect(() => {
     if (props.token) {

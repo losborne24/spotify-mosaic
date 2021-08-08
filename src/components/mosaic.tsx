@@ -1,6 +1,7 @@
 import { Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import ReactImageMagnify from 'react-image-magnify';
+import { useHistory } from 'react-router-dom';
 
 const Mosaic = (props: any) => {
   const [width, setWidth] = useState(0);
@@ -8,6 +9,8 @@ const Mosaic = (props: any) => {
   const [selectedTrackImage, setSelectedTrackImage] = useState() as any[];
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mosaicCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const history = useHistory();
+
   const selectImage = (img: any) => {
     let height = img.height;
     let width = img.width;
@@ -92,11 +95,6 @@ const Mosaic = (props: any) => {
     gridTemplateColumns: `repeat(${width}, 1fr)`,
   };
 
-  const test = () => {
-    if (mosaicCanvasRef.current) {
-      setSelectedTrackImage(mosaicCanvasRef.current.toDataURL());
-    }
-  };
   useEffect(() => {
     if (props.imageSrc) {
       let img = new Image();
@@ -108,9 +106,20 @@ const Mosaic = (props: any) => {
   }, [props.img]);
   return (
     <>
-      <Button>Select New Playlist</Button>
-      <Button onClick={test}>Upload New Image</Button>
-      <Button disabled>Download Image</Button>
+      <Button
+        onClick={() => {
+          history.push('/playlists');
+        }}
+      >
+        Select New Playlist
+      </Button>
+      <Button
+        onClick={() => {
+          history.push('/selectImage');
+        }}
+      >
+        Upload New Image
+      </Button>
       <canvas hidden ref={canvasRef} width={width} height={height}></canvas>
       <canvas
         hidden
@@ -121,7 +130,7 @@ const Mosaic = (props: any) => {
       <ReactImageMagnify
         {...{
           smallImage: {
-            alt: 'Wristwatch by Ted Baker London',
+            alt: 'Mosaic',
             width: width * 8,
             height: height * 8,
             isFluidWidth: false,
