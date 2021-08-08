@@ -90,20 +90,10 @@ const Playlist = (props: any) => {
   useEffect(() => {
     if (props.token) fetchPersonalPlaylists();
   }, [props]);
-  const [shiftX, setShiftX] = useState(0);
   const useStyles = makeStyles({
     marginLeft: { marginLeft: '0.5rem' },
     marginRight: { marginRight: '0.5rem' },
-    flex: {
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-    },
-    imageContainer: {
-      overflow: 'hidden',
-      flexBasis: '90%',
-      transform: `{translateX(${shiftX})} `,
-    },
+
     playlistImage: {
       maxHeight: '10vw',
       maxWidth: '10vw',
@@ -125,22 +115,16 @@ const Playlist = (props: any) => {
   const classes = useStyles();
   return (
     <>
-      <div className={classes.flex}>
-        <div className={classes.arrowContainer}></div>
-        <div className={`${classes.flex} ${classes.imageContainer}`}>
-          {personalPlaylists.map((item: any, index: any) => {
-            return (
-              <img
-                className={classes.playlistImage}
-                key={`img-${index}`}
-                src={item.img}
-                alt="album cover"
-              ></img>
-            );
-          })}
-        </div>
-        <div className={classes.arrowContainer}></div>
-      </div>
+      {personalPlaylists.map((item: any, index: any) => {
+        return (
+          <img
+            className={classes.playlistImage}
+            key={`img-${index}`}
+            src={item.img}
+            alt="album cover"
+          ></img>
+        );
+      })}
       <div className={classes.playlistInputContainer}>
         <TextField
           label="Enter Playlist ID"
