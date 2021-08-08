@@ -31,6 +31,11 @@ const App = () => {
             <Playlist setToken={setToken} token={token} setTracks={setTracks} />
           </div>
         </Route>
+        <Route path="/:access_token(access_token=.*)">
+          <div className={classes.center}>
+            <Playlist setToken={setToken} token={token} setTracks={setTracks} />
+          </div>
+        </Route>
         <Route path="/selectImage">
           <div className={classes.center}>
             <SelectImage createImg={(src: any) => createImg(src)} />

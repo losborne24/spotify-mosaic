@@ -10,7 +10,7 @@ const ConnectToSpotify = () => {
   );
 
   const connectToSpotify = () => {
-    window.location.href = `https://accounts.spotify.com/authorize?client_id=${constants.client_id}&redirect_uri=${constants.redirect_uri}&response_type=${constants.response_type}&scope=${constants.scopes}&state=${authState}`;
+    window.location.href = `https://accounts.spotify.com/authorize?client_id=${constants.client_id}&response_type=${constants.response_type}&scope=${constants.scopes}&state=${authState}&redirect_uri=${constants.redirect_uri}`;
 
     setAuthState(Math.floor(Math.random() * 10000000));
   };
