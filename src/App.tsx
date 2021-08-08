@@ -24,7 +24,7 @@ const App = () => {
   });
   const classes = useStyles();
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Switch>
         <Route path="/playlists">
           <div className={classes.center}>
