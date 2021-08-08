@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Playlist from './components/select-playlist';
 import { useState } from 'react';
 import Mosaic from './components/mosaic';
