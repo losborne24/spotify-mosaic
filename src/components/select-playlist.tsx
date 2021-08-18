@@ -169,12 +169,15 @@ const Playlist = (props: any) => {
   };
 
   useEffect(() => {
-    if (
-      window.location.hash.split(constants.access_token).pop()?.split('&')[0]
-    ) {
-      props.setToken(
-        window.location.hash.split(constants.access_token).pop()?.split('&')[0]
-      );
+    if (window.location.hash.includes(constants.access_token)) {
+      const token = window.location.hash
+        .split(constants.access_token)
+        .pop()
+        ?.split('&')[0];
+      if (token) localStorage.setItem('token', token);
+      props.setToken(token);
+    } else {
+      props.setToken(localStorage.getItem('token'));
     }
   }, []);
   useEffect(() => {

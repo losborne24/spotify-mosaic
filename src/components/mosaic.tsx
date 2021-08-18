@@ -1,7 +1,7 @@
 import { Button } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
-import ReactImageMagnify from 'react-image-magnify';
 import { useHistory } from 'react-router-dom';
+import Slider from '@material-ui/core/Slider';
 
 const Mosaic = (props: any) => {
   const [width, setWidth] = useState(0);
@@ -10,10 +10,15 @@ const Mosaic = (props: any) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mosaicCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const history = useHistory();
-
+  const [value, setValue] = useState<number>(30);
+  const handleChange = (event: any, newValue: number | number[]) => {
+    setValue(newValue as number);
+    console.log(newValue);
+  };
   const selectImage = (img: any) => {
     let height = img.height;
     let width = img.width;
+
     if (width * height > 10000) {
       let size = width * height;
       let modifier = Math.sqrt(size / 10000);
@@ -90,10 +95,6 @@ const Mosaic = (props: any) => {
       }
     }
   };
-  const grid = {
-    display: 'grid',
-    gridTemplateColumns: `repeat(${width}, 1fr)`,
-  };
 
   useEffect(() => {
     if (props.imageSrc) {
@@ -113,6 +114,7 @@ const Mosaic = (props: any) => {
       >
         Select New Playlist
       </Button>
+
       <Button
         onClick={() => {
           history.push('/selectImage');
@@ -127,21 +129,17 @@ const Mosaic = (props: any) => {
         width={width * 64}
         height={height * 64}
       ></canvas>
-      <ReactImageMagnify
-        {...{
-          smallImage: {
-            alt: 'Mosaic',
-            width: width * 8,
-            height: height * 8,
-            isFluidWidth: false,
-            src: selectedTrackImage,
-          },
-          largeImage: {
-            src: selectedTrackImage,
-            width: width * 64,
-            height: height * 64,
-          },
-        }}
+      <img
+        src={selectedTrackImage}
+        width={width * value}
+        height={height * value}
+      ></img>
+      <Slider
+        value={value}
+        onChange={handleChange}
+        aria-labelledby="continuous-slider"
+        min={1}
+        max={64}
       />
     </>
   );
