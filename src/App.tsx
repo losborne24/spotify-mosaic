@@ -9,6 +9,8 @@ const App = () => {
   const [imageSrc, setImageSrc] = useState<any>();
   const [token, setToken] = useState('');
   const [tracks, setTracks] = useState([{ id: '', img: '', avgColour: null }]);
+  const [returnToMosaic, setReturnToMosaic] = useState(false);
+
   const createImg = (imageSrc: any) => {
     setImageSrc(imageSrc);
   };
@@ -28,12 +30,22 @@ const App = () => {
       <Switch>
         <Route path="/playlists">
           <div className={classes.center}>
-            <Playlist setToken={setToken} token={token} setTracks={setTracks} />
+            <Playlist
+              setToken={setToken}
+              token={token}
+              setTracks={setTracks}
+              returnToMosaic={returnToMosaic}
+            />
           </div>
         </Route>
         <Route path="/:access_token(access_token=.*)">
           <div className={classes.center}>
-            <Playlist setToken={setToken} token={token} setTracks={setTracks} />
+            <Playlist
+              setToken={setToken}
+              token={token}
+              setTracks={setTracks}
+              returnToMosaic={returnToMosaic}
+            />
           </div>
         </Route>
         <Route path="/selectImage">
@@ -42,7 +54,11 @@ const App = () => {
           </div>
         </Route>
         <Route path="/createMosaic">
-          <Mosaic tracks={tracks} imageSrc={imageSrc} />
+          <Mosaic
+            tracks={tracks}
+            imageSrc={imageSrc}
+            setReturnToMosaic={setReturnToMosaic}
+          />
         </Route>
         <Route path="/">
           <div className={classes.center}>

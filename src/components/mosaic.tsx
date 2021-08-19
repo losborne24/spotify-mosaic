@@ -14,7 +14,6 @@ const Mosaic = (props: any) => {
   const [value, setValue] = useState<number>(30);
   const handleChange = (event: any, newValue: number | number[]) => {
     setValue(newValue as number);
-    console.log(newValue);
   };
   const selectImage = (img: any) => {
     let height = img.height;
@@ -140,6 +139,7 @@ const Mosaic = (props: any) => {
           variant="contained"
           color="primary"
           onClick={() => {
+            props.setReturnToMosaic(true);
             history.push('/playlists');
           }}
         >

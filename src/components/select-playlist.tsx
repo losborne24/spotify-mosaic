@@ -101,27 +101,33 @@ const Playlist = (props: any) => {
         if (res.data?.items) {
           const _tracks: { id: string; img: string; avgColour: any }[] = [];
           const fac = new FastAverageColor();
-          const uniqueTracks: { id: string }[] = [];
+          const uniqueTracks: any[] = [];
           res.data.items.forEach((item: any) => {
-            if (!uniqueTracks.find((u) => u.id === item.track.album.id)) {
-              uniqueTracks.push({ id: item.track.album.id });
-              fac
-                .getColorAsync(item.track.album.images[2].url)
-                .then((color) => {
-                  _tracks.push({
-                    id: item.track.album.id,
-                    img: item.track.album.images[2].url,
-                    avgColour: color.value,
-                  });
-                  // console.log(
-                  //   '%c avgColour',
-                  //   `color: rgba(${color.value[0]},${color.value[1]},${color.value[2]},${color.value[3]}`
-                  // );
-                });
+            if (
+              !uniqueTracks.find(
+                (u) => u.track.album.id === item.track.album.id
+              )
+            ) {
+              uniqueTracks.push(item);
             }
           });
-          props.setTracks(_tracks);
-          history.push('/selectImage');
+          uniqueTracks.forEach((item: any) => {
+            fac.getColorAsync(item.track.album.images[2].url).then((color) => {
+              _tracks.push({
+                id: item.track.album.id,
+                img: item.track.album.images[2].url,
+                avgColour: color.value,
+              });
+              if (_tracks.length === uniqueTracks.length) {
+                props.setTracks(_tracks);
+                if (props.returnToMosaic) {
+                  history.push('/createMosaic');
+                } else {
+                  history.push('/selectImage');
+                }
+              }
+            });
+          });
         }
       })
       .catch((err: any) => {
@@ -142,25 +148,29 @@ const Playlist = (props: any) => {
         if (res.data?.items) {
           const _tracks: { id: string; img: string; avgColour: any }[] = [];
           const fac = new FastAverageColor();
-          const uniqueTracks: { id: string }[] = [];
+          const uniqueTracks: any[] = [];
           res.data.items.forEach((item: any) => {
-            if (!uniqueTracks.find((u) => u.id === item.album.id)) {
-              uniqueTracks.push({ id: item.album.id });
-              fac.getColorAsync(item.album.images[2].url).then((color) => {
-                _tracks.push({
-                  id: item.album.id,
-                  img: item.album.images[2].url,
-                  avgColour: color.value,
-                });
-                // console.log(
-                //   '%c avgColour',
-                //   `color: rgba(${color.value[0]},${color.value[1]},${color.value[2]},${color.value[3]}`
-                // );
-              });
+            if (!uniqueTracks.find((u) => u.album.id === item.album.id)) {
+              uniqueTracks.push(item);
             }
           });
-          props.setTracks(_tracks);
-          history.push('/selectImage');
+          uniqueTracks.forEach((item: any) => {
+            fac.getColorAsync(item.album.images[2].url).then((color) => {
+              _tracks.push({
+                id: item.album.id,
+                img: item.album.images[2].url,
+                avgColour: color.value,
+              });
+              if (_tracks.length === uniqueTracks.length) {
+                props.setTracks(_tracks);
+                if (props.returnToMosaic) {
+                  history.push('/createMosaic');
+                } else {
+                  history.push('/selectImage');
+                }
+              }
+            });
+          });
         }
       })
       .catch((err: any) => {
