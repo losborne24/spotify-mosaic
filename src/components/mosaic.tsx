@@ -1,7 +1,8 @@
-import { Button } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Slider from '@material-ui/core/Slider';
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 const Mosaic = (props: any) => {
   const [width, setWidth] = useState(0);
@@ -105,23 +106,56 @@ const Mosaic = (props: any) => {
       };
     }
   }, [props.img]);
-  return (
-    <>
-      <Button
-        onClick={() => {
-          history.push('/playlists');
-        }}
-      >
-        Select New Playlist
-      </Button>
 
-      <Button
-        onClick={() => {
-          history.push('/selectImage');
-        }}
-      >
-        Upload New Image
-      </Button>
+  const useStyles = makeStyles({
+    scrollContainer: {
+      maxHeight: '100%',
+      maxWidth: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    mosaicContainer: {
+      display: 'grid',
+      gridTemplateRows: 'auto 1fr auto',
+      height: '100%',
+    },
+    buttonContainer: {
+      display: 'flex',
+      margin: '2rem 1.5rem',
+      '& > *': {
+        margin: '0 0.5rem',
+      },
+    },
+    sliderContainer: {
+      margin: '2rem 4rem',
+    },
+  });
+  const classes = useStyles();
+
+  return (
+    <div className={classes.mosaicContainer}>
+      <div className={classes.buttonContainer}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            history.push('/playlists');
+          }}
+        >
+          Select New Playlist
+        </Button>
+
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            history.push('/selectImage');
+          }}
+        >
+          Upload New Image
+        </Button>
+      </div>
       <canvas hidden ref={canvasRef} width={width} height={height}></canvas>
       <canvas
         hidden
@@ -129,19 +163,23 @@ const Mosaic = (props: any) => {
         width={width * 64}
         height={height * 64}
       ></canvas>
-      <img
-        src={selectedTrackImage}
-        width={width * value}
-        height={height * value}
-      ></img>
-      <Slider
-        value={value}
-        onChange={handleChange}
-        aria-labelledby="continuous-slider"
-        min={1}
-        max={64}
-      />
-    </>
+      <ScrollContainer className={classes.scrollContainer}>
+        <img
+          src={selectedTrackImage}
+          width={width * value}
+          height={height * value}
+        ></img>
+      </ScrollContainer>
+      <div className={classes.sliderContainer}>
+        <Slider
+          value={value}
+          onChange={handleChange}
+          aria-labelledby="continuous-slider"
+          min={1}
+          max={64}
+        />
+      </div>
+    </div>
   );
 };
 export default Mosaic;
