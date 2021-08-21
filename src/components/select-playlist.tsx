@@ -89,7 +89,7 @@ const Playlist = (props: any) => {
         headers: { Authorization: `Bearer ${props?.token}` },
         params: {
           client_id: constants.client_id,
-          fields: 'items(track(album(images,id)))',
+          fields: 'items(track(album(images,id))),total',
           response_type: constants.response_type,
           limit: 100,
           offset: 0,
@@ -97,6 +97,11 @@ const Playlist = (props: any) => {
       })
       .then((res: any) => {
         if (res.data?.items) {
+          if (res.data.total > 100) {
+            props.setFetchMoreUrl(
+              `https://api.spotify.com/v1/playlists/${playlistId}/tracks`
+            );
+          }
           const _tracks: { id: string; img: string; avgColour: any }[] = [];
           const fac = new FastAverageColor();
           const uniqueTracks: any[] = [];
@@ -109,6 +114,8 @@ const Playlist = (props: any) => {
               uniqueTracks.push(item);
             }
           });
+          props.setUniqueTracks(uniqueTracks);
+
           uniqueTracks.forEach((item: any) => {
             fac.getColorAsync(item.track.album.images[2].url).then((color) => {
               _tracks.push({
@@ -144,6 +151,8 @@ const Playlist = (props: any) => {
       })
       .then((res: any) => {
         if (res.data?.items) {
+          props.setFetchMoreUrl(null);
+
           const _tracks: { id: string; img: string; avgColour: any }[] = [];
           const fac = new FastAverageColor();
           const uniqueTracks: any[] = [];

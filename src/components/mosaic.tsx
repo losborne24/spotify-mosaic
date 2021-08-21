@@ -4,10 +4,14 @@ import { useHistory } from 'react-router-dom';
 import Slider from '@material-ui/core/Slider';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ScrollContainer from 'react-indiana-drag-scroll';
+import axios from 'axios';
+import * as constants from '../constants';
+import FastAverageColor from 'fast-average-color';
 
 const Mosaic = (props: any) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
+  const [offset, setOffset] = useState(100);
   const [isLoadingMosaic, setIsLoadingMosaic] = useState(true);
   const [selectedTrackImage, setSelectedTrackImage] = useState<any>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -98,6 +102,57 @@ const Mosaic = (props: any) => {
       }
     }
   };
+  const fetchMoreTracks = () => {
+    axios
+      .get(props.fetchMoreUrl, {
+        headers: { Authorization: `Bearer ${props?.token}` },
+        params: {
+          client_id: constants.client_id,
+          fields: 'items(track(album(images,id))),total',
+          response_type: constants.response_type,
+          limit: 100,
+          offset: offset,
+        },
+      })
+      .then((res: any) => {
+        if (res.data?.items) {
+          if (res.data.total > offset + 100) {
+            setOffset(offset + 100);
+          } else {
+            props.setFetchMoreUrl(null);
+          }
+          const _tracks: { id: string; img: string; avgColour: any }[] = [];
+          const fac = new FastAverageColor();
+          const uniqueTracks: any[] = props.uniqueTracks;
+          res.data.items.forEach((item: any) => {
+            if (
+              !uniqueTracks.find(
+                (u) => u.track.album.id === item.track.album.id
+              )
+            ) {
+              uniqueTracks.push(item);
+            }
+          });
+          props.setUniqueTracks(uniqueTracks);
+          uniqueTracks.forEach((item: any) => {
+            fac.getColorAsync(item.track.album.images[2].url).then((color) => {
+              _tracks.push({
+                id: item.track.album.id,
+                img: item.track.album.images[2].url,
+                avgColour: color.value,
+              });
+              if (_tracks.length === uniqueTracks.length) {
+                props.setTracks([...props.tracks, ..._tracks]);
+                setIsLoadingMosaic(true);
+              }
+            });
+          });
+        }
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     if (props.imageSrc) {
@@ -107,7 +162,7 @@ const Mosaic = (props: any) => {
         selectImage(img);
       };
     }
-  }, [props.img]);
+  }, [props.img, props.tracks]);
 
   const useStyles = makeStyles({
     scrollContainer: {
@@ -169,6 +224,14 @@ const Mosaic = (props: any) => {
           }}
         >
           Upload New Image
+        </Button>
+        <Button
+          disabled={isLoadingMosaic || props.fetchMoreUrl === null}
+          variant="contained"
+          color="primary"
+          onClick={fetchMoreTracks}
+        >
+          Fetch More Tracks
         </Button>
         <Button
           disabled={isLoadingMosaic}
