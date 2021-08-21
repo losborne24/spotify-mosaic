@@ -186,6 +186,7 @@ const Mosaic = (props: any) => {
     buttonContainer: {
       display: 'flex',
       margin: '2rem 1.5rem',
+      overflowX: 'auto',
       '& > *': {
         margin: '0 0.5rem',
       },

@@ -20,23 +20,29 @@ const ConnectToSpotify = () => {
   const useStyles = makeStyles({
     scrollContainer: {
       maxHeight: '80%',
-      maxWidth: '80%',
+      maxWidth: '70%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
     },
     spotifyImg: { height: '100vh', width: '100vh' },
+    btnConnect: { margin: '2rem' },
   });
   const classes = useStyles();
 
   return (
     <>
+      <h1>Spotify Mosaic</h1>
       <ScrollContainer className={classes.scrollContainer}>
         <img src={spotifyMosaicImg} className={classes.spotifyImg}></img>
       </ScrollContainer>
 
-      <h1>Spotify Mosaic</h1>
-      <Button variant="contained" color="primary" onClick={connectToSpotify}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={connectToSpotify}
+        className={classes.btnConnect}
+      >
         Connect to Spotify
       </Button>
     </>
