@@ -2,16 +2,18 @@ import { Button, makeStyles } from '@material-ui/core';
 import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Slider from '@material-ui/core/Slider';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import ScrollContainer from 'react-indiana-drag-scroll';
 
 const Mosaic = (props: any) => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
-  const [selectedTrackImage, setSelectedTrackImage] = useState() as any[];
+  const [isLoadingMosaic, setIsLoadingMosaic] = useState(true);
+  const [selectedTrackImage, setSelectedTrackImage] = useState<any>();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mosaicCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const history = useHistory();
-  const [value, setValue] = useState<number>(30);
+  const [value, setValue] = useState<number>(10);
   const handleChange = (event: any, newValue: number | number[]) => {
     setValue(newValue as number);
   };
@@ -37,6 +39,7 @@ const Mosaic = (props: any) => {
       if (mosaicCanvasRef.current) {
         setSelectedTrackImage(mosaicCanvasRef.current.toDataURL());
         count = 0;
+        setIsLoadingMosaic(false);
       }
     }
   };
@@ -114,10 +117,16 @@ const Mosaic = (props: any) => {
       alignItems: 'center',
       justifyContent: 'center',
     },
+    outerContainer: {
+      display: 'grid',
+      gridTemplateRows: 'auto 1fr',
+      height: '100%',
+    },
     mosaicContainer: {
       display: 'grid',
-      gridTemplateRows: 'auto 1fr auto',
+      gridTemplateRows: '1fr auto',
       height: '100%',
+      minHeight: '0',
     },
     buttonContainer: {
       display: 'flex',
@@ -129,11 +138,17 @@ const Mosaic = (props: any) => {
     sliderContainer: {
       margin: '2rem 4rem',
     },
+    loadingContainer: {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%,-50%)',
+    },
   });
   const classes = useStyles();
 
   return (
-    <div className={classes.mosaicContainer}>
+    <div className={classes.outerContainer}>
       <div className={classes.buttonContainer}>
         <Button
           variant="contained"
@@ -155,7 +170,22 @@ const Mosaic = (props: any) => {
         >
           Upload New Image
         </Button>
+        <Button
+          disabled={isLoadingMosaic}
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            const link = document.createElement('a');
+            link.href = selectedTrackImage;
+            link.setAttribute('download', 'mosaic.png'); //or any other extension
+            document.body.appendChild(link);
+            link.click();
+          }}
+        >
+          Download Mosaic
+        </Button>
       </div>
+
       <canvas hidden ref={canvasRef} width={width} height={height}></canvas>
       <canvas
         hidden
@@ -163,22 +193,30 @@ const Mosaic = (props: any) => {
         width={width * 64}
         height={height * 64}
       ></canvas>
-      <ScrollContainer className={classes.scrollContainer}>
-        <img
-          src={selectedTrackImage}
-          width={width * value}
-          height={height * value}
-        ></img>
-      </ScrollContainer>
-      <div className={classes.sliderContainer}>
-        <Slider
-          value={value}
-          onChange={handleChange}
-          aria-labelledby="continuous-slider"
-          min={1}
-          max={64}
-        />
-      </div>
+      {isLoadingMosaic ? (
+        <div className={classes.loadingContainer}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <div className={classes.mosaicContainer}>
+          <ScrollContainer className={classes.scrollContainer}>
+            <img
+              src={selectedTrackImage}
+              width={width * value}
+              height={height * value}
+            ></img>
+          </ScrollContainer>
+          <div className={classes.sliderContainer}>
+            <Slider
+              value={value}
+              onChange={handleChange}
+              aria-labelledby="continuous-slider"
+              min={1}
+              max={64}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

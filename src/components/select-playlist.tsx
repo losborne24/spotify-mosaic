@@ -5,13 +5,11 @@ import { useHistory } from 'react-router-dom';
 import * as constants from '../constants';
 import { TextField, Button, makeStyles } from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
-// Import Swiper styles
 import 'swiper/swiper.min.css';
 import 'swiper/components/navigation/navigation.min.css';
 import '../styles/custom-swiper.scss';
 
 import SwiperCore, { Navigation } from 'swiper/core';
-// install Swiper modules
 SwiperCore.use([Navigation]);
 const Playlist = (props: any) => {
   const history = useHistory();
