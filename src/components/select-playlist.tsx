@@ -37,7 +37,7 @@ const Playlist = (props: any) => {
           client_id: constants.client_id,
           fields: 'items(name,images,id)',
           response_type: constants.response_type,
-          limit: 10,
+          limit: constants.playlists_page_size,
           offset: pType === playlistType.public ? 0 : offsetPlaylists,
         },
       })
@@ -46,8 +46,8 @@ const Playlist = (props: any) => {
         if (res.data) {
           const items =
             pType === playlistType.public
-              ? res.data?.playlists.items
-              : res.data?.items;
+              ? res.data.playlists.items
+              : res.data.items;
           items.forEach((item: any) => {
             _playlists.push({
               img: item.images[0].url,
@@ -59,8 +59,10 @@ const Playlist = (props: any) => {
         if (pType === playlistType.public) {
           setPublicPlaylists(_playlists);
         } else {
-          setLoadMorePlaylists(offsetPlaylists + 10 < res.data?.total);
-          setOffsetPlaylists(offsetPlaylists + 10);
+          setLoadMorePlaylists(
+            offsetPlaylists + constants.playlists_page_size < res.data?.total
+          );
+          setOffsetPlaylists(offsetPlaylists + constants.playlists_page_size);
           setPersonalPlaylists((playlists: any) => [
             ...playlists,
             ..._playlists,
@@ -83,12 +85,12 @@ const Playlist = (props: any) => {
             client_id: constants.client_id,
             fields: 'items(track(album(images,id))),total',
             response_type: constants.response_type,
-            limit: 100,
+            limit: constants.tracks_page_size,
             offset: 0,
           }
         : {
             time_range: id,
-            limit: 50,
+            limit: constants.top_tracks_page_size,
             offset: 0,
           };
     axios
@@ -98,7 +100,10 @@ const Playlist = (props: any) => {
       })
       .then((res: any) => {
         if (res.data?.items) {
-          if (res.data.total > 100 && tType === trackType.playlist) {
+          if (
+            res.data.total > constants.tracks_page_size &&
+            tType === trackType.playlist
+          ) {
             props.setFetchMoreUrl(
               `https://api.spotify.com/v1/playlists/${id}/tracks`
             );
@@ -135,9 +140,9 @@ const Playlist = (props: any) => {
               if (_tracks.length === uniqueTracks.length) {
                 props.setTracks(_tracks);
                 if (props.returnToMosaic) {
-                  history.push('/createMosaic');
+                  history.push(constants.create_mosaic_url);
                 } else {
-                  history.push('/selectImage');
+                  history.push(constants.select_image_url);
                 }
               }
             });
