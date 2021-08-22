@@ -3,7 +3,12 @@ import FastAverageColor from 'fast-average-color';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import * as constants from '../constants';
-import { TextField, Button, makeStyles } from '@material-ui/core';
+import {
+  TextField,
+  Button,
+  makeStyles,
+  CircularProgress,
+} from '@material-ui/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper.min.css';
 import 'swiper/components/navigation/navigation.min.css';
@@ -13,6 +18,10 @@ SwiperCore.use([Navigation]);
 const Playlist = (props: any) => {
   const history = useHistory();
   const [personalPlaylists, setPersonalPlaylists] = useState<any[]>([]);
+  const [isLoadingPersonalPlaylists, setIsLoadingPersonalPlaylists] =
+    useState<boolean>(true);
+  const [isLoadingPublicPlaylists, setIsLoadingPublicPlaylists] =
+    useState<boolean>(true);
   const [publicPlaylists, setPublicPlaylists] = useState<any[]>([]);
   const [inputPlaylistId, setInputPlaylistId] = useState<string>('');
   const [offsetPlaylists, setOffsetPlaylists] = useState<number>(0);
@@ -58,6 +67,7 @@ const Playlist = (props: any) => {
         }
         if (pType === playlistType.public) {
           setPublicPlaylists(_playlists);
+          setIsLoadingPublicPlaylists(false);
         } else {
           setLoadMorePlaylists(
             offsetPlaylists + constants.playlists_page_size < res.data?.total
@@ -67,6 +77,7 @@ const Playlist = (props: any) => {
             ...playlists,
             ..._playlists,
           ]);
+          setIsLoadingPersonalPlaylists(false);
         }
       })
       .catch((err: any) => {
@@ -186,8 +197,6 @@ const Playlist = (props: any) => {
     marginLeft: { marginLeft: '0.5rem' },
     marginRight: { marginRight: '0.5rem' },
     width100: { width: '100%' },
-    widthXL: { width: '83%' },
-    widthXS: { width: '17%' },
     playlistImage: {
       maxHeight: '14vw',
       maxWidth: '14vw',
@@ -242,6 +251,12 @@ const Playlist = (props: any) => {
       height: '100%',
     },
     btnTopTracks: { width: '100%', margin: '0.5rem' },
+    loadingContainer: {
+      position: 'absolute',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%,-50%)',
+    },
   });
   const classes = useStyles();
   const yourTopTrackStrings = [
@@ -251,15 +266,68 @@ const Playlist = (props: any) => {
   ];
   return (
     <>
-      <div className={classes.playlistContainer}>
-        <div className={`${classes.publicContainer} `}>
-          <h2>Public Playlists</h2>
+      {isLoadingPersonalPlaylists || isLoadingPublicPlaylists ? (
+        <div className={classes.loadingContainer}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <>
+          <div className={classes.playlistContainer}>
+            <div className={`${classes.publicContainer} `}>
+              <h2>Public Playlists</h2>
+              <Swiper
+                slidesPerView={5}
+                navigation={true}
+                className={classes.width100}
+              >
+                {publicPlaylists.map((item: any, index: any) => {
+                  return (
+                    <SwiperSlide
+                      className={`${classes.swiperSlide}`}
+                      key={`swiper-slider-${index} `}
+                      onClick={() => {
+                        setInputPlaylistId(item.id);
+                      }}
+                    >
+                      <img
+                        className={`${classes.playlistImage}`}
+                        key={`img-${index}`}
+                        src={item.img}
+                        alt="album cover"
+                      ></img>
+                      <p className={classes.txtFlex}>{item.name}</p>
+                    </SwiperSlide>
+                  );
+                })}
+              </Swiper>
+            </div>
+            <div className={`${classes.topTracksContainer} `}>
+              <h2>Your Top Tracks</h2>
+              <div className={classes.btnTopTrackContainer}>
+                {yourTopTrackStrings.map((item: any, index: any) => {
+                  return (
+                    <Button
+                      className={`${classes.btnTopTracks}`}
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        fetchTracks(trackType.top, item.id);
+                      }}
+                    >
+                      {item.text}
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>{' '}
+          </div>{' '}
+          <h2>Your Playlists</h2>
           <Swiper
-            slidesPerView={5}
+            slidesPerView={6}
             navigation={true}
             className={classes.width100}
           >
-            {publicPlaylists.map((item: any, index: any) => {
+            {personalPlaylists.map((item: any, index: any) => {
               return (
                 <SwiperSlide
                   className={`${classes.swiperSlide}`}
@@ -278,80 +346,39 @@ const Playlist = (props: any) => {
                 </SwiperSlide>
               );
             })}
+            {isLoadMorePlaylists ? (
+              <SwiperSlide
+                className={`${classes.swiperSlide}`}
+                onClick={() => fetchPlaylists(playlistType.personal)}
+              >
+                <div className={`${classes.loadMore} ${classes.txtFlex}`}>
+                  <p>Load More</p>
+                </div>
+                <p></p>
+              </SwiperSlide>
+            ) : (
+              <></>
+            )}
           </Swiper>
-        </div>
-        <div className={`${classes.topTracksContainer} `}>
-          <h2>Your Top Tracks</h2>
-          <div className={classes.btnTopTrackContainer}>
-            {yourTopTrackStrings.map((item: any, index: any) => {
-              return (
-                <Button
-                  className={`${classes.btnTopTracks}`}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => {
-                    fetchTracks(trackType.top, item.id);
-                  }}
-                >
-                  {item.text}
-                </Button>
-              );
-            })}
-          </div>
-        </div>{' '}
-      </div>{' '}
-      <h2>Your Playlists</h2>
-      <Swiper slidesPerView={6} navigation={true} className={classes.width100}>
-        {personalPlaylists.map((item: any, index: any) => {
-          return (
-            <SwiperSlide
-              className={`${classes.swiperSlide}`}
-              key={`swiper-slider-${index} `}
-              onClick={() => {
-                setInputPlaylistId(item.id);
-              }}
+          <div className={classes.playlistInputContainer}>
+            <TextField
+              label="Enter Playlist ID"
+              helperText="e.g. 37i9dQZEVXbNG2KDcFcKOF"
+              onChange={(e) => setInputPlaylistId(e.target.value)}
+              className={classes.marginRight}
+              value={inputPlaylistId}
+            />
+            <Button
+              className={classes.marginLeft}
+              variant="contained"
+              color="primary"
+              onClick={() => fetchTracks(trackType.playlist, inputPlaylistId)}
             >
-              <img
-                className={`${classes.playlistImage}`}
-                key={`img-${index}`}
-                src={item.img}
-                alt="album cover"
-              ></img>
-              <p className={classes.txtFlex}>{item.name}</p>
-            </SwiperSlide>
-          );
-        })}
-        {isLoadMorePlaylists ? (
-          <SwiperSlide
-            className={`${classes.swiperSlide}`}
-            onClick={() => fetchPlaylists(playlistType.personal)}
-          >
-            <div className={`${classes.loadMore} ${classes.txtFlex}`}>
-              <p>Load More</p>
-            </div>
-            <p></p>
-          </SwiperSlide>
-        ) : (
-          <></>
-        )}
-      </Swiper>{' '}
-      <div className={classes.playlistInputContainer}>
-        <TextField
-          label="Enter Playlist ID"
-          helperText="e.g. 37i9dQZEVXbNG2KDcFcKOF"
-          onChange={(e) => setInputPlaylistId(e.target.value)}
-          className={classes.marginRight}
-          value={inputPlaylistId}
-        />
-        <Button
-          className={classes.marginLeft}
-          variant="contained"
-          color="primary"
-          onClick={() => fetchTracks(trackType.playlist, inputPlaylistId)}
-        >
-          Confirm
-        </Button>
-      </div>
+              Confirm
+            </Button>
+          </div>
+        </>
+      )}
     </>
   );
 };
