@@ -5,7 +5,11 @@ import Mosaic from './components/mosaic';
 import ConnectToSpotify from './components/connect-to-spotify';
 import { makeStyles } from '@material-ui/core';
 import SelectImage from './components/select-image';
+
 const App = () => {
+  const [authState, setAuthState] = useState(
+    Math.floor(Math.random() * 10000000)
+  );
   const [imageSrc, setImageSrc] = useState<any>();
   const [fetchMoreUrl, setFetchMoreUrl] = useState<string | null>(null);
   const [uniqueTracks, setUniqueTracks] = useState<any[]>([]);
@@ -74,7 +78,7 @@ const App = () => {
         </Route>
         <Route path="/">
           <div className={classes.center}>
-            <ConnectToSpotify />
+            <ConnectToSpotify authState={authState} />
           </div>
         </Route>
       </Switch>
