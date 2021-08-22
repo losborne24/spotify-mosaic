@@ -195,7 +195,7 @@ const Playlist = (props: any) => {
   }, [props.token]);
   const useStyles = makeStyles({
     marginLeft: { marginLeft: '0.5rem' },
-    marginRight: { marginRight: '0.5rem' },
+    txtPlaylistUrl: { marginRight: '0.5rem', flexBasis: '50%' },
     width100: { width: '100%' },
     playlistImage: {
       maxHeight: '14vw',
@@ -204,6 +204,8 @@ const Playlist = (props: any) => {
     playlistInputContainer: {
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
     },
     txtFlex: {
       display: 'flex',
@@ -304,7 +306,7 @@ const Playlist = (props: any) => {
             <div className={`${classes.topTracksContainer} `}>
               <h2>Your Top Tracks</h2>
               <div className={classes.btnTopTrackContainer}>
-                {yourTopTrackStrings.map((item: any, index: any) => {
+                {yourTopTrackStrings.map((item: any) => {
                   return (
                     <Button
                       className={`${classes.btnTopTracks}`}
@@ -365,7 +367,7 @@ const Playlist = (props: any) => {
               label="Enter Playlist ID"
               helperText="e.g. 37i9dQZEVXbNG2KDcFcKOF"
               onChange={(e) => setInputPlaylistId(e.target.value)}
-              className={classes.marginRight}
+              className={classes.txtPlaylistUrl}
               value={inputPlaylistId}
             />
             <Button

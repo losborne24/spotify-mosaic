@@ -11,4 +11,5 @@ export const playlists_page_size = 10;
 export const tracks_page_size = 100;
 export const top_tracks_page_size = 50;
 export const create_mosaic_url = '/createMosaic';
+export const select_playlist_url = '/playlists';
 export const select_image_url = '/selectImage';

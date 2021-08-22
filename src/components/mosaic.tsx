@@ -211,7 +211,7 @@ const Mosaic = (props: any) => {
           color="primary"
           onClick={() => {
             props.setReturnToMosaic(true);
-            history.push('/playlists');
+            history.push(constants.select_playlist_url);
           }}
         >
           Select New Playlist
@@ -221,7 +221,7 @@ const Mosaic = (props: any) => {
           variant="contained"
           color="primary"
           onClick={() => {
-            history.push('/selectImage');
+            history.push(constants.select_image_url);
           }}
         >
           Upload New Image
@@ -268,6 +268,7 @@ const Mosaic = (props: any) => {
               src={selectedTrackImage}
               width={width * value}
               height={height * value}
+              alt="mosaic"
             ></img>
           </ScrollContainer>
           <div className={classes.sliderContainer}>

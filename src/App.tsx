@@ -5,6 +5,7 @@ import Mosaic from './components/mosaic';
 import ConnectToSpotify from './components/connect-to-spotify';
 import { makeStyles } from '@material-ui/core';
 import SelectImage from './components/select-image';
+import * as constants from './constants';
 
 const App = () => {
   const [imageSrc, setImageSrc] = useState<any>();
@@ -33,7 +34,7 @@ const App = () => {
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <Switch>
-        <Route path="/playlists">
+        <Route path={constants.select_playlist_url}>
           <div className={classes.center}>
             <Playlist
               setToken={setToken}
@@ -57,12 +58,12 @@ const App = () => {
             />
           </div>
         </Route>
-        <Route path="/selectImage">
+        <Route path={constants.select_image_url}>
           <div className={classes.center}>
             <SelectImage createImg={(src: any) => createImg(src)} />
           </div>
         </Route>
-        <Route path="/createMosaic">
+        <Route path={constants.create_mosaic_url}>
           <Mosaic
             fetchMoreUrl={fetchMoreUrl}
             setFetchMoreUrl={setFetchMoreUrl}
