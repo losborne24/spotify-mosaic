@@ -13,8 +13,8 @@ import SwiperCore, { Navigation } from 'swiper/core';
 SwiperCore.use([Navigation]);
 const Playlist = (props: any) => {
   const history = useHistory();
-  const [personalPlaylists, setPersonalPlaylists] = useState([]) as any[];
-  const [publicPlaylists, setPublicPlaylists] = useState([]) as any[];
+  const [personalPlaylists, setPersonalPlaylists] = useState<any[]>([]);
+  const [publicPlaylists, setPublicPlaylists] = useState<any[]>([]);
   const [inputPlaylistId, setInputPlaylistId] = useState('');
   const [offset, setOffset] = useState(0);
   const [isLoadMore, setLoadMore] = useState(false);
@@ -186,7 +186,17 @@ const Playlist = (props: any) => {
   };
 
   useEffect(() => {
-    if (window.location.hash.includes(constants.access_token)) {
+    let stateRes: string | undefined = '';
+    if (window.location.hash.includes(constants.state_res)) {
+      stateRes = window.location.hash
+        .split(constants.state_res)
+        .pop()
+        ?.split('&')[0];
+    }
+    if (
+      stateRes === localStorage.getItem('authState') &&
+      window.location.hash.includes(constants.access_token)
+    ) {
       const token = window.location.hash
         .split(constants.access_token)
         .pop()

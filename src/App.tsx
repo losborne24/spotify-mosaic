@@ -7,14 +7,13 @@ import { makeStyles } from '@material-ui/core';
 import SelectImage from './components/select-image';
 
 const App = () => {
-  const [authState, setAuthState] = useState(
-    Math.floor(Math.random() * 10000000)
-  );
   const [imageSrc, setImageSrc] = useState<any>();
   const [fetchMoreUrl, setFetchMoreUrl] = useState<string | null>(null);
   const [uniqueTracks, setUniqueTracks] = useState<any[]>([]);
-  const [token, setToken] = useState('');
-  const [tracks, setTracks] = useState([{ id: '', img: '', avgColour: null }]);
+  const [token, setToken] = useState<string>('');
+  const [tracks, setTracks] = useState<any[]>([
+    { id: '', img: '', avgColour: null },
+  ]);
   const [returnToMosaic, setReturnToMosaic] = useState<boolean>(false);
 
   const createImg = (imageSrc: any) => {
@@ -78,7 +77,7 @@ const App = () => {
         </Route>
         <Route path="/">
           <div className={classes.center}>
-            <ConnectToSpotify authState={authState} />
+            <ConnectToSpotify />
           </div>
         </Route>
       </Switch>

@@ -4,10 +4,13 @@ import spotifyMosaicImg from '../assets/spotify.png';
 import ScrollContainer from 'react-indiana-drag-scroll';
 import { makeStyles } from '@material-ui/core';
 
-const ConnectToSpotify = (props: { authState: any }) => {
+const ConnectToSpotify = () => {
   const connectToSpotify = () => {
-    window.location.href = `https://accounts.spotify.com/authorize?client_id=${constants.client_id}&response_type=${constants.response_type}&scope=${constants.scopes}&state=${props.authState}&redirect_uri=${constants.redirect_uri}`;
+    const authState = String(Math.floor(Math.random() * 10000000));
+    localStorage.setItem('authState', authState);
+    window.location.href = `https://accounts.spotify.com/authorize?client_id=${constants.client_id}&response_type=${constants.response_type}&scope=${constants.scopes}&state=${authState}&redirect_uri=${constants.redirect_uri}`;
   };
+
   const useStyles = makeStyles({
     scrollContainer: {
       maxHeight: '80%',
@@ -20,7 +23,6 @@ const ConnectToSpotify = (props: { authState: any }) => {
     btnConnect: { margin: '2rem' },
   });
   const classes = useStyles();
-
   return (
     <>
       <h1>Spotify Mosaic</h1>
@@ -31,7 +33,6 @@ const ConnectToSpotify = (props: { authState: any }) => {
           alt="Spotify Mosaic"
         ></img>
       </ScrollContainer>
-
       <Button
         variant="contained"
         color="primary"

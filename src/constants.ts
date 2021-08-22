@@ -6,3 +6,4 @@ export const redirect_uri =
     : 'https://losborne24.github.io/spotify-mosaic/';
 export const scopes = 'user-top-read user-read-private user-read-email';
 export const access_token = 'access_token=';
+export const state_res = 'state=';
