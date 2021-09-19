@@ -35,7 +35,7 @@ const App = () => {
   const classes = useStyles();
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      <Analytics id="G-1CNV9K5VMQ" debug>
+      <Analytics id="G-JQQCW8E695" debug>
         <Switch>
           <Route path={constants.select_playlist_url}>
             <div className={classes.center}>
