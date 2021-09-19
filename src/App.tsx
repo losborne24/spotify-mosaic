@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Playlist from './components/select-playlist';
 import { useEffect, useState } from 'react';
 import Mosaic from './components/mosaic';
@@ -42,7 +42,7 @@ const App = () => {
   });
   const classes = useStyles();
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Switch>
         <Route path={constants.select_playlist_url}>
           <div className={classes.center}>
@@ -56,7 +56,18 @@ const App = () => {
             />
           </div>
         </Route>
-
+        <Route path="/:access_token(access_token=.*)">
+          <div className={classes.center}>
+            <Playlist
+              setToken={setToken}
+              token={token}
+              setTracks={setTracks}
+              returnToMosaic={returnToMosaic}
+              setFetchMoreUrl={setFetchMoreUrl}
+              setUniqueTracks={setUniqueTracks}
+            />
+          </div>
+        </Route>
         <Route path={constants.select_image_url}>
           <div className={classes.center}>
             <SelectImage createImg={(src: any) => createImg(src)} />
