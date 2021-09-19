@@ -1,11 +1,12 @@
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Playlist from './components/select-playlist';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Mosaic from './components/mosaic';
 import ConnectToSpotify from './components/connect-to-spotify';
 import { makeStyles } from '@material-ui/core';
 import SelectImage from './components/select-image';
 import * as constants from './constants';
+import ReactGA from 'react-ga';
 
 const App = () => {
   const [imageSrc, setImageSrc] = useState<any>();
@@ -20,6 +21,11 @@ const App = () => {
   const createImg = (imageSrc: any) => {
     setImageSrc(imageSrc);
   };
+  useEffect(() => {
+    ReactGA.initialize('G-9T8T2F7CT0');
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
+
   const useStyles = makeStyles({
     center: {
       display: 'flex',
