@@ -11,8 +11,7 @@ import { createBrowserHistory } from 'history';
 
 export const history = createBrowserHistory();
 history.listen((location) => {
-  console.log(location);
-  ReactGA.send(location);
+  ReactGA.send(location.pathname + location.search);
 });
 const App = () => {
   const [imageSrc, setImageSrc] = useState<any>();
