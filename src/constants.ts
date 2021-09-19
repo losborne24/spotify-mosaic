@@ -3,7 +3,7 @@ export const response_type = 'token';
 export const redirect_uri =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3000/playlists'
-    : 'https://losborne24.github.io/playlists';
+    : 'https://losborne24.github.io/spotify-mosaic/playlists';
 export const scopes = 'user-top-read user-read-private user-read-email';
 export const access_token = 'access_token=';
 export const state_res = 'state=';
