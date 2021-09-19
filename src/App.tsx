@@ -1,12 +1,12 @@
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Playlist from './components/select-playlist';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Mosaic from './components/mosaic';
 import ConnectToSpotify from './components/connect-to-spotify';
 import { makeStyles } from '@material-ui/core';
 import SelectImage from './components/select-image';
 import * as constants from './constants';
-import ReactGA from 'react-ga';
+import Analytics from 'react-router-ga';
 
 const App = () => {
   const [imageSrc, setImageSrc] = useState<any>();
@@ -21,10 +21,6 @@ const App = () => {
   const createImg = (imageSrc: any) => {
     setImageSrc(imageSrc);
   };
-  useEffect(() => {
-    ReactGA.initialize('G-9T8T2F7CT0');
-    ReactGA.pageview(window.location.pathname + window.location.search);
-  }, []);
 
   const useStyles = makeStyles({
     center: {
@@ -39,55 +35,57 @@ const App = () => {
   const classes = useStyles();
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      <Switch>
-        <Route path={constants.select_playlist_url}>
-          <div className={classes.center}>
-            <Playlist
-              setToken={setToken}
-              token={token}
-              setTracks={setTracks}
-              returnToMosaic={returnToMosaic}
+      <Analytics id="G-9T8T2F7CT0" debug>
+        <Switch>
+          <Route path={constants.select_playlist_url}>
+            <div className={classes.center}>
+              <Playlist
+                setToken={setToken}
+                token={token}
+                setTracks={setTracks}
+                returnToMosaic={returnToMosaic}
+                setFetchMoreUrl={setFetchMoreUrl}
+                setUniqueTracks={setUniqueTracks}
+              />
+            </div>
+          </Route>
+          <Route path="/:access_token(access_token=.*)">
+            <div className={classes.center}>
+              <Playlist
+                setToken={setToken}
+                token={token}
+                setTracks={setTracks}
+                returnToMosaic={returnToMosaic}
+                setFetchMoreUrl={setFetchMoreUrl}
+                setUniqueTracks={setUniqueTracks}
+              />
+            </div>
+          </Route>
+          <Route path={constants.select_image_url}>
+            <div className={classes.center}>
+              <SelectImage createImg={(src: any) => createImg(src)} />
+            </div>
+          </Route>
+          <Route path={constants.create_mosaic_url}>
+            <Mosaic
+              fetchMoreUrl={fetchMoreUrl}
               setFetchMoreUrl={setFetchMoreUrl}
-              setUniqueTracks={setUniqueTracks}
-            />
-          </div>
-        </Route>
-        <Route path="/:access_token(access_token=.*)">
-          <div className={classes.center}>
-            <Playlist
-              setToken={setToken}
               token={token}
-              setTracks={setTracks}
-              returnToMosaic={returnToMosaic}
-              setFetchMoreUrl={setFetchMoreUrl}
+              tracks={tracks}
+              imageSrc={imageSrc}
+              setReturnToMosaic={setReturnToMosaic}
               setUniqueTracks={setUniqueTracks}
+              uniqueTracks={uniqueTracks}
+              setTracks={setTracks}
             />
-          </div>
-        </Route>
-        <Route path={constants.select_image_url}>
-          <div className={classes.center}>
-            <SelectImage createImg={(src: any) => createImg(src)} />
-          </div>
-        </Route>
-        <Route path={constants.create_mosaic_url}>
-          <Mosaic
-            fetchMoreUrl={fetchMoreUrl}
-            setFetchMoreUrl={setFetchMoreUrl}
-            token={token}
-            tracks={tracks}
-            imageSrc={imageSrc}
-            setReturnToMosaic={setReturnToMosaic}
-            setUniqueTracks={setUniqueTracks}
-            uniqueTracks={uniqueTracks}
-            setTracks={setTracks}
-          />
-        </Route>
-        <Route path="/">
-          <div className={classes.center}>
-            <ConnectToSpotify />
-          </div>
-        </Route>
-      </Switch>
+          </Route>
+          <Route path="/">
+            <div className={classes.center}>
+              <ConnectToSpotify />
+            </div>
+          </Route>
+        </Switch>{' '}
+      </Analytics>
     </Router>
   );
 };
