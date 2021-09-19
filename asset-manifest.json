@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/spotify-mosaic/static/css/main.6a0924b9.chunk.css",
-    "main.js": "/spotify-mosaic/static/js/main.5124054b.chunk.js",
-    "main.js.map": "/spotify-mosaic/static/js/main.5124054b.chunk.js.map",
+    "main.js": "/spotify-mosaic/static/js/main.68a93670.chunk.js",
+    "main.js.map": "/spotify-mosaic/static/js/main.68a93670.chunk.js.map",
     "runtime-main.js": "/spotify-mosaic/static/js/runtime-main.31d05553.js",
     "runtime-main.js.map": "/spotify-mosaic/static/js/runtime-main.31d05553.js.map",
     "static/css/2.df5fcae2.chunk.css": "/spotify-mosaic/static/css/2.df5fcae2.chunk.css",
-    "static/js/2.215c58a1.chunk.js": "/spotify-mosaic/static/js/2.215c58a1.chunk.js",
-    "static/js/2.215c58a1.chunk.js.map": "/spotify-mosaic/static/js/2.215c58a1.chunk.js.map",
+    "static/js/2.0d30a83e.chunk.js": "/spotify-mosaic/static/js/2.0d30a83e.chunk.js",
+    "static/js/2.0d30a83e.chunk.js.map": "/spotify-mosaic/static/js/2.0d30a83e.chunk.js.map",
     "static/js/3.bafb6391.chunk.js": "/spotify-mosaic/static/js/3.bafb6391.chunk.js",
     "static/js/3.bafb6391.chunk.js.map": "/spotify-mosaic/static/js/3.bafb6391.chunk.js.map",
     "index.html": "/spotify-mosaic/index.html",
     "static/css/2.df5fcae2.chunk.css.map": "/spotify-mosaic/static/css/2.df5fcae2.chunk.css.map",
     "static/css/main.6a0924b9.chunk.css.map": "/spotify-mosaic/static/css/main.6a0924b9.chunk.css.map",
-    "static/js/2.215c58a1.chunk.js.LICENSE.txt": "/spotify-mosaic/static/js/2.215c58a1.chunk.js.LICENSE.txt",
+    "static/js/2.0d30a83e.chunk.js.LICENSE.txt": "/spotify-mosaic/static/js/2.0d30a83e.chunk.js.LICENSE.txt",
     "static/media/spotify.43abc2c0.png": "/spotify-mosaic/static/media/spotify.43abc2c0.png"
   },
   "entrypoints": [
     "static/js/runtime-main.31d05553.js",
     "static/css/2.df5fcae2.chunk.css",
-    "static/js/2.215c58a1.chunk.js",
+    "static/js/2.0d30a83e.chunk.js",
     "static/css/main.6a0924b9.chunk.css",
-    "static/js/main.5124054b.chunk.js"
+    "static/js/main.68a93670.chunk.js"
   ]
 }
