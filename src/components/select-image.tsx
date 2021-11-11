@@ -1,5 +1,6 @@
 import { Button } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+import * as constants from '../constants';
 
 const SelectImage = (props: any) => {
   const history = useHistory();
@@ -12,7 +13,7 @@ const SelectImage = (props: any) => {
       reader.onload = async (_) => {
         let imgData = reader.result;
         await convertToString(imgData);
-        history.push('/createMosaic');
+        history.push(constants.create_mosaic_url);
       };
     }
   };

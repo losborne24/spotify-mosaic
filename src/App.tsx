@@ -1,21 +1,34 @@
 import { HashRouter as Router, Switch, Route } from 'react-router-dom';
 import Playlist from './components/select-playlist';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Mosaic from './components/mosaic';
 import ConnectToSpotify from './components/connect-to-spotify';
 import { makeStyles } from '@material-ui/core';
 import SelectImage from './components/select-image';
+import * as constants from './constants';
+import ReactGA from 'react-ga4';
+import { createBrowserHistory } from 'history';
+
+export const history = createBrowserHistory();
+history.listen((location) => {
+  ReactGA.send(location.pathname + location.search);
+});
 const App = () => {
   const [imageSrc, setImageSrc] = useState<any>();
   const [fetchMoreUrl, setFetchMoreUrl] = useState<string | null>(null);
   const [uniqueTracks, setUniqueTracks] = useState<any[]>([]);
-  const [token, setToken] = useState('');
-  const [tracks, setTracks] = useState([{ id: '', img: '', avgColour: null }]);
+  const [token, setToken] = useState<string>('');
+  const [tracks, setTracks] = useState<any[]>([
+    { id: '', img: '', avgColour: null },
+  ]);
   const [returnToMosaic, setReturnToMosaic] = useState<boolean>(false);
 
   const createImg = (imageSrc: any) => {
     setImageSrc(imageSrc);
   };
+  useEffect(() => {
+    ReactGA.initialize('G-JQQCW8E695');
+  }, []);
   const useStyles = makeStyles({
     center: {
       display: 'flex',
@@ -30,7 +43,7 @@ const App = () => {
   return (
     <Router basename={process.env.PUBLIC_URL}>
       <Switch>
-        <Route path="/playlists">
+        <Route path={constants.select_playlist_url}>
           <div className={classes.center}>
             <Playlist
               setToken={setToken}
@@ -54,12 +67,12 @@ const App = () => {
             />
           </div>
         </Route>
-        <Route path="/selectImage">
+        <Route path={constants.select_image_url}>
           <div className={classes.center}>
             <SelectImage createImg={(src: any) => createImg(src)} />
           </div>
         </Route>
-        <Route path="/createMosaic">
+        <Route path={constants.create_mosaic_url}>
           <Mosaic
             fetchMoreUrl={fetchMoreUrl}
             setFetchMoreUrl={setFetchMoreUrl}
